@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace burrito
+namespace burritocli
 {
     /// <summary>
     /// Parses arguments passed into Burrito.
@@ -26,7 +26,7 @@ namespace burrito
                     if (Values.ContainsKey(args[i]))
                     {
                         //Error.
-                        Error.Exit("Error parsing value argument '" + args[i] + "', a value already exists with that name.");
+                        Logger.Exit("Error parsing value argument '" + args[i] + "', a value already exists with that name.");
                         return;
                     }
 
@@ -44,7 +44,7 @@ namespace burrito
                 }
 
                 //Invalid value.
-                Error.Exit("Invalid argument (argument " + (i + 1) + "), not a flag or a value.");
+                Logger.Exit("Invalid argument (argument " + (i + 1) + "), not a flag or a value.");
                 return;
             }    
         }
