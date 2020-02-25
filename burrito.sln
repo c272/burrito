@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "burrito-cli", "burrito-cli.csproj", "{A1F97364-8EA9-47D5-AC79-8257518BCB69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "burrito-api", "burrito-api\burrito-api.csproj", "{9A8896FE-69C0-430D-9B41-030C94EF6B4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "burrito-core", "burrito-core\burrito-core.csproj", "{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{9A8896FE-69C0-430D-9B41-030C94EF6B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A8896FE-69C0-430D-9B41-030C94EF6B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A8896FE-69C0-430D-9B41-030C94EF6B4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

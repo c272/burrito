@@ -17,12 +17,16 @@ namespace Burrito
         //A list of public, static globals and their type names.
         public Dictionary<string, string> StaticGlobals { get; set; } = new Dictionary<string, string>();
 
+        //The root URL for this project.
+        public string RootURL;
+
         //The name of this project.
         public string Name;
 
-        public ProjectModule(string name)
+        public ProjectModule(string name, string rootURI)
         {
             Name = name;
+            RootURL = rootURI;
         }
 
         /// <summary>
@@ -45,13 +49,28 @@ namespace Burrito
         {
             var code = new ProjectCode(Name);
 
+            //Rename any class called "_globals" with an extra underscore.
+            if (Namespaces["@"].FindIndex(x => x.Name == "_globals") != -1)
+            {
+                Namespaces["@"].First(x => x.Name == "_globals").Name += "_";
+            }
+
+            //Add the root address as a class called "_globals".
+            var globalModule = new ClassModule("_globals");
+            globalModule.StaticFields.Add(new Static("RootURL", "string")
+            {
+                Value = RootURL
+            });
+            Namespaces["@"].Add(globalModule);
+
+
             //Loop over namespaces for generation.
             foreach (var ns in Namespaces)
             {
                 //Correct any collisions in this namespace.
                 foreach (var module in ns.Value)
                 {
-                    while (ns.Value.FindIndex(x => x.Name == module.Name) != -1)
+                    while (ns.Value.FindAll(x => x.Name == module.Name).Count > 1)
                     {
                         module.Name += "_";
                     }
@@ -60,9 +79,11 @@ namespace Burrito
                 //Generate code for the namespace.
                 foreach (var module in ns.Value)
                 {
-                    code.Files.Add(module.Name, module.GenerateCode(ns.Key));
+                    code.Files.Add(module.Name, module.GenerateCode(Name + "." + ns.Key));
                 }
             }
+
+            return code;
         }
     }
 }

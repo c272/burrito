@@ -14,14 +14,14 @@ namespace Burrito
     /// </summary>
     public static class BurritoAPI
     {
-        //Whether to compile the library after generating it.
-        public static bool CompileAfterGeneration { get; set; } = false;
-
         //What path to generate the library at.
         public static string GenerationPath { get; set; } = Environment.CurrentDirectory;
 
         //Where to draw the API schema from to use.
         public static string APISchemaPath { get; set; } = null;
+
+        //Whether to only compile the DLL and ignore writing to project.
+        public static bool CompileOnly { get; set; } = false;
 
         public static ProjectModule Project { get; set; } = null;
 
@@ -65,7 +65,7 @@ namespace Burrito
             }
 
             //Create a project module with the given schema and namespaces.
-            Project = new ProjectModule(schema.Name);
+            Project = new ProjectModule(schema.Name, schema.RootPath);
             Project.AddNamespace("Data");
             Project.AddNamespace("@");
             Project.Namespaces["Data"].Add(new ClassModule("_empty"));
@@ -88,10 +88,9 @@ namespace Burrito
                 var moduleClass = new ClassModule(module.Name);
                 foreach (var route in module.Routes)
                 {
-                    //URL exists?
-                    if (route.RelativeURL == null)
+                    //Check whether the route has valid properties.
+                    if (!route.Validate())
                     {
-                        Logger.Write("[ERR] - No URL provided for route in sectoin '" + module.Name + "'.", 1);
                         return 0;
                     }
 
@@ -123,7 +122,7 @@ namespace Burrito
                         case "POST":
                         case "post":
                             //Figure out a data type it should receive.
-                            var postClassReturned = DataTypeCreator.DeriveFromRoute(schema.RootPath, route);
+                            var postClassReturned = DataTypeCreator.DeriveFromRoute(schema.RootPath, route, route.ExampleData);
                             if (postClassReturned == null) { break; }
 
                             //Figure out the data type is should send.
@@ -165,7 +164,17 @@ namespace Burrito
             //All classes generated, generate code for the project.
             ProjectCode code = Project.GenerateCode();
 
-            return -1;
+            //Decide what to do with it.
+            if (CompileOnly)
+            {
+                //code.CompileToDLL(GenerationPath);
+            }
+            else
+            {
+                //code.CompileToProject(GenerationPath);
+            }
+
+            return code.Files.Count;
         }
 
         /// <summary>

@@ -22,8 +22,8 @@ namespace burritocli
 
             //Parse the arguments provided, set the runtime information.
             BurritoAPI.GenerationPath = argMan.GetValue("p") == null ? Environment.CurrentDirectory : argMan.GetValue("p");
-            BurritoAPI.CompileAfterGeneration = argMan.GetFlag("c");
             BurritoAPI.APISchemaPath = argMan.GetValue("s");
+            BurritoAPI.CompileOnly = argMan.GetFlag("dll");
 
             //Validate arguments.
             if (argMan.GetValue("s") == null)
@@ -67,7 +67,7 @@ namespace burritocli
             //Run burrito.
             var t = new Stopwatch();
             t.Start();
-            int routesGenerated = BurritoAPI.Run();
+            int filesGenerated = BurritoAPI.Run();
             t.Stop();
 
             //Write the finish message.
@@ -75,7 +75,7 @@ namespace burritocli
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(t.ElapsedMilliseconds / 1000f + "s");
             Console.ResetColor();
-            Console.Write(", " + routesGenerated + " routes generated.\n");
+            Console.Write(", " + filesGenerated + " classes generated.\n");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Burrito
 {
@@ -13,9 +14,16 @@ namespace Burrito
         public ProjectCode(string name)
         {
             ProjectName = name;
+        }
 
-            //Add the default API file.
-            //...
+        internal void CompileToDLL(string generationPath)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CompileToProject(string generationPath)
+        {
+            throw new NotImplementedException();
         }
     }
 }
