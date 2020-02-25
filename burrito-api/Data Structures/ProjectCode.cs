@@ -62,12 +62,15 @@ namespace Burrito
                 deps.Add(MetadataReference.CreateFromFile(dep));
             }
 
+            //Compilation options.
+            var compilationOpts = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+
             //Set up compilation.
             CSharpCompilation compilation = CSharpCompilation.Create(
                 ProjectName,
                 trees.ToArray(),
                 deps.ToArray(),
-                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                compilationOpts);
 
             //Write to a DLL stream.
             using (var dllStream = new MemoryStream())

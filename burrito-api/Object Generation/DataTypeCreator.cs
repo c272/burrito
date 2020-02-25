@@ -137,9 +137,12 @@ namespace Burrito
                     return new Field(name, "int");
                 case JTokenType.String:
                     return new Field(name, "string");
+                case JTokenType.Null:
+                    Logger.Write("[WARN] - Null type in JSON at property '" + name + "', assumed as an object.", 1);
+                    return new Field(name, "object ");
 
                 default:
-                    Logger.Write("[WARN]- Unsupported type in JSON to create a class from: '" + value.Type.ToString() + "' for generated data class '" + name + "'. Skipped property.", 1);
+                    Logger.Write("[WARN] - Unsupported type in JSON to create a class from: '" + value.Type.ToString() + "' for generated data class '" + name + "'. Skipped property.", 1);
                     return null;
             }
         }

@@ -67,7 +67,7 @@ namespace Burrito
 
             //Namespace and class header.
             code += "namespace " + ns + "\n{\n";
-            code += "//<summary>\n///The" + Name + " class, rolled up by Burrito.\n///</summary>\n";
+            code += "//<summary>\n///The " + Name + " class, rolled up by Burrito.\n///</summary>\n";
             code += "public class " + Name + "\n{\n";
 
             //Generate every single static field.
@@ -81,7 +81,14 @@ namespace Burrito
             //Generate every single field.
             foreach (var field in Fields)
             {
-                code += "public " + field.TypeName + " " + field.Name + ";\n";
+                if (field.IsList)
+                {
+                    code += "public List<" + field.TypeName + "> " + field.Name + ";\n";
+                }
+                else
+                {
+                    code += "public " + field.TypeName + " " + field.Name + ";\n";
+                }
             }
 
             code += "\n";
@@ -109,11 +116,6 @@ namespace Burrito
 
                 //Build a list of parameters.
                 List<string> params_ = new List<string>();
-                foreach (var param in method.RouteParams)
-                {
-                    //parameters in relative route.
-                    params_.Add("object " + param);
-                }
                 if (method is POSTMethodModule)
                 {
                     var postMethod = (POSTMethodModule)method;
@@ -122,6 +124,13 @@ namespace Burrito
                 if (method.Async)
                 {
                     params_.Add("BurritoCore.APICallReturnDelegate<" + method.ReceivedDataType.Name + "> callback");
+                }
+
+                //Optional template params Templates are replaced by blank by default.
+                foreach (var param in method.RouteParams)
+                {
+                    //parameters in relative route.
+                    params_.Add("string " + param + "=\"\"");
                 }
 
                 //Add params, close.
