@@ -20,7 +20,7 @@ namespace Burrito
         public List<string> Dependencies = new List<string>()
         {
             "Newtonsoft.Json.dll", //json libs
-            Assembly.GetExecutingAssembly().Location //this asm
+            "burrito-core.dll" //core
         };
         public string ProjectName;
 
@@ -55,8 +55,9 @@ namespace Burrito
 
             //Generate dependency references.
             var deps = new List<PortableExecutableReference>();
-            deps.Add(MetadataReference.CreateFromFile(typeof(object).Assembly.Location)); //make sure to add system
-            deps.Add(MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)); //linq
+            deps.Add(MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location)); //make sure to add system
+            deps.Add(MetadataReference.CreateFromFile(typeof(Enumerable).GetTypeInfo().Assembly.Location)); //linq
+            deps.Add(MetadataReference.CreateFromFile(typeof(BurritoCore.API).GetTypeInfo().Assembly.Location)); //api
             foreach (var dep in Dependencies)
             {
                 deps.Add(MetadataReference.CreateFromFile(dep));
@@ -109,9 +110,8 @@ namespace Burrito
             RepackOptions opt = new RepackOptions();
             opt.OutputFile = outputPath + ".packed";
             opt.SearchDirectories = new string[] { Environment.CurrentDirectory, AppDomain.CurrentDomain.BaseDirectory };
-
+            
             //Setting input assemblies.
-            string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
             opt.InputAssemblies = new string[] { outputPath }.Concat(Dependencies).ToArray();
 
             //Redirecting console input temporarily.
@@ -119,7 +119,7 @@ namespace Burrito
             {
                 //Set up writer.
                 var originalOut = Console.Out;
-                if (BurritoAPI.VerbosityLevel < 3)
+                if (BurritoAPI.VerbosityLevel < 0)
                 {
                     Console.SetOut(writer);
                 }
