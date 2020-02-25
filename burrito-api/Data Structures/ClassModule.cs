@@ -11,9 +11,6 @@ namespace Burrito
     /// </summary>
     public class ClassModule
     {
-        //The parent project of this class module.
-        public ProjectModule Project;
-
         //The XML comment summary to use above the class name.
         public string XMLSummary;
 
@@ -36,10 +33,15 @@ namespace Burrito
         //A list of public fields to create within this class.
         public List<Field> Fields = new List<Field>();
 
-        public ClassModule(ProjectModule proj, string name)
+        public ClassModule(string name)
         {
-            Project = proj;
             Name = name;
+        }
+
+        //Gets the name of the "empty" type.
+        public static string Empty()
+        {
+            return "_empty";
         }
     }
 
@@ -50,5 +52,12 @@ namespace Burrito
     {
         public string TypeName;
         public string Name;
+        public bool IsList = false;
+
+        public Field(string name, string type)
+        {
+            TypeName = type;
+            Name = name;
+        }
     }
 }

@@ -49,7 +49,7 @@ namespace Burrito
         [JsonProperty("method")]
         public string MethodName;
 
-        //The type of HTTP method that is being used, eg. GET, POST.
+        //The type of HTTP method that is being used, eg. GET, POST (required).
         [JsonProperty("type")]
         public string HTTPMethod;
 

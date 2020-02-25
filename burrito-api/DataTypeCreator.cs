@@ -64,6 +64,9 @@ namespace Burrito
         /// </summary>
         public static ClassModule FromJObject(JObject jobj, string name)
         {
+            //Create ClassModule.
+            var module = new ClassModule(name);
+
             //If the name or JObject is null, invalid.
             if (jobj == null)
             {
@@ -77,6 +80,68 @@ namespace Burrito
             }
 
             //Create the class module.
+            foreach (var prop in jobj.Properties())
+            {
+                module.Fields.Add(GenerateField(name, prop.Name, prop.Value));
+            }
+
+            return module;
+        }
+
+        private static Field GenerateField(string rootName, string name, JToken value)
+        {
+            switch (value.Type)
+            {
+                //array
+                case JTokenType.Array:
+                    //How long is the array?
+                    var arr = (JArray)value;
+                    if (arr.Count == 0)
+                    {
+                        Logger.Log("[WARN] - Cannot generate a type from an empty array. Leaving an empty list type here.");
+                        return new Field(name, ClassModule.Empty());
+                    }
+
+                    //generate field
+                    var subObjField = GenerateField(rootName, name, arr[0]);
+                    subObjField.IsList = true;
+
+                    //return field
+                    return subObjField;
+
+                //object (new class)
+                case JTokenType.Object:
+                    //generate type.
+                    var subObjType = FromJObject((JObject)value, rootName + "_" + name);
+                    while (BurritoAPI.Project.Namespaces["Data"].FindIndex(x => x.Name == subObjType.Name) != -1)
+                    {
+                        subObjType.Name += "_";
+                    }
+                    BurritoAPI.Project.Namespaces["Data"].Add(subObjType);
+
+                    //add field.
+                    return new Field(name, subObjType.Name);
+
+                //raw values
+                case JTokenType.Boolean:
+                    return new Field(name, "bool");
+                case JTokenType.Bytes:
+                    return new Field(name, "byte[]");
+                case JTokenType.Date:
+                    return new Field(name, "DateTime");
+                case JTokenType.Float:
+                    return new Field(name, "float");
+                case JTokenType.Guid:
+                    return new Field(name, "Guid");
+                case JTokenType.Integer:
+                    return new Field(name, "int");
+                case JTokenType.String:
+                    return new Field(name, "string");
+
+                default:
+                    Logger.Write("[WARN]- Unsupported type in JSON to create a class from: '" + value.Type.ToString() + "' for generated data class '" + name + "'. Skipped property.", 1);
+                    return null;
+            }
         }
     }
 }

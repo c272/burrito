@@ -11,6 +11,8 @@ namespace burritocli
         public static void Log(string msg)
         {
             if (msg.StartsWith("[ERR]")) { Console.ForegroundColor = ConsoleColor.Red; }
+            if (msg.StartsWith("[WARN]")) { Console.ForegroundColor = ConsoleColor.Yellow; }
+
             Console.WriteLine(msg);
             Console.ResetColor();
         }

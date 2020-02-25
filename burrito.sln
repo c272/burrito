@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29709.97
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "burrito-cli", "burrito-cli.csproj", "{A1F97364-8EA9-47D5-AC79-8257518BCB69}"
 EndProject
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4A7F01D9-78EF-4969-A4E4-F04900A8E0B3}
+		SolutionGuid = {AF261903-6B6D-4D88-A981-BAE4F1167C2E}
 	EndGlobalSection
 EndGlobal

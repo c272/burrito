@@ -18,13 +18,12 @@ namespace burritocli
         {
             //Create locals.
             var argMan = new ArgumentParser(args);
-            var burrito = new BurritoAPI();
-            burrito.SetLogger(Logger.Log);
+            BurritoAPI.SetLogger(Logger.Log);
 
             //Parse the arguments provided, set the runtime information.
-            burrito.GenerationPath = argMan.GetValue("p") == null ? Environment.CurrentDirectory : argMan.GetValue("p");
-            burrito.CompileAfterGeneration = argMan.GetFlag("c");
-            burrito.APISchemaPath = argMan.GetValue("s");
+            BurritoAPI.GenerationPath = argMan.GetValue("p") == null ? Environment.CurrentDirectory : argMan.GetValue("p");
+            BurritoAPI.CompileAfterGeneration = argMan.GetFlag("c");
+            BurritoAPI.APISchemaPath = argMan.GetValue("s");
 
             //Validate arguments.
             if (argMan.GetValue("s") == null)
@@ -35,19 +34,19 @@ namespace burritocli
             }
 
             //Schema exists?
-            if (!File.Exists(burrito.APISchemaPath))
+            if (!File.Exists(BurritoAPI.APISchemaPath))
             {
                 Logger.Exit("Invalid file path given for schema, file does not exist.");
                 return;
             }
 
             //Generating directory exists?
-            if (!Directory.Exists(burrito.GenerationPath))
+            if (!Directory.Exists(BurritoAPI.GenerationPath))
             {
                 //Create it.
                 try
                 {
-                    Directory.CreateDirectory(burrito.GenerationPath);
+                    Directory.CreateDirectory(BurritoAPI.GenerationPath);
                 }
                 catch (Exception e)
                 {
@@ -57,18 +56,18 @@ namespace burritocli
             }
 
             //Directory has any files in it?
-            if (Directory.GetFiles(burrito.GenerationPath).Count() != 0)
+            if (Directory.GetFiles(BurritoAPI.GenerationPath).Count() != 0)
             {
                 //Use a child directory of the name of the schema file.
-                string newDir = Path.Combine(burrito.GenerationPath, Path.GetFileNameWithoutExtension(burrito.APISchemaPath));
+                string newDir = Path.Combine(BurritoAPI.GenerationPath, Path.GetFileNameWithoutExtension(BurritoAPI.APISchemaPath));
                 Directory.CreateDirectory(newDir);
-                burrito.GenerationPath = newDir;
+                BurritoAPI.GenerationPath = newDir;
             }
 
             //Run burrito.
             var t = new Stopwatch();
             t.Start();
-            int routesGenerated = burrito.Run();
+            int routesGenerated = BurritoAPI.Run();
             t.Stop();
 
             //Write the finish message.

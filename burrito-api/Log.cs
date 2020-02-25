@@ -12,13 +12,13 @@ namespace Burrito
     public static class Logger
     {
         //The logger to write actions to a log file/console. Defaultly set to only throw.
-        internal static Action<string> Log { get; set; } = (string s) => 
+        public static Action<string> Log { get; set; } = (string s) => 
         { 
             if (s.StartsWith("[ERR]")) { throw new Exception(s); }
         };
 
         //The verbosity of the logger.
-        public static int Verbosity { get; set; }
+        public static int Verbosity { get; set; } = 1;
 
         /// <summary>
         /// Writes to the log if the verbosity level allows.
