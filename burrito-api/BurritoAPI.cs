@@ -162,6 +162,9 @@ namespace Burrito
                 Project.Namespaces["@"].Add(moduleClass);
             }
 
+            //All classes generated, generate code for the project.
+            ProjectCode code = Project.GenerateCode();
+
             return -1;
         }
 

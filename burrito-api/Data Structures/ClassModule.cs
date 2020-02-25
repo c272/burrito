@@ -43,6 +43,14 @@ namespace Burrito
         {
             return "_empty";
         }
+
+        /// <summary>
+        /// Generates the class code for this module.
+        /// </summary>
+        public string GenerateCode(string namespaces)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>

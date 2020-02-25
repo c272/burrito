@@ -37,5 +37,32 @@ namespace Burrito
 
             Namespaces.Add(name, new List<ClassModule>());
         }
+
+        /// <summary>
+        /// Generates the project code module for this 
+        /// </summary>
+        public ProjectCode GenerateCode()
+        {
+            var code = new ProjectCode(Name);
+
+            //Loop over namespaces for generation.
+            foreach (var ns in Namespaces)
+            {
+                //Correct any collisions in this namespace.
+                foreach (var module in ns.Value)
+                {
+                    while (ns.Value.FindIndex(x => x.Name == module.Name) != -1)
+                    {
+                        module.Name += "_";
+                    }
+                }
+
+                //Generate code for the namespace.
+                foreach (var module in ns.Value)
+                {
+                    code.Files.Add(module.Name, module.GenerateCode(ns.Key));
+                }
+            }
+        }
     }
 }

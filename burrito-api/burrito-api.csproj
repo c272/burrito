@@ -49,9 +49,10 @@
     <Compile Include="BurritoAPI.cs" />
     <Compile Include="Data Structures\ClassModule.cs" />
     <Compile Include="Data Structures\ProjectModule.cs" />
-    <Compile Include="DataTypeCreator.cs" />
-    <Compile Include="HTTP.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="Object Generation\DataTypeCreator.cs" />
+    <Compile Include="Utilities\HTTP.cs" />
+    <Compile Include="Utilities\Log.cs" />
+    <Compile Include="Data Structures\ProjectCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
