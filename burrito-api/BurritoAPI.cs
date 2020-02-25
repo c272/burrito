@@ -103,8 +103,11 @@ namespace Burrito
                             return 0;
                         case "GET":
                         case "get":
-                            //Figure out a data type from the API endpoint.
+                            //Figure out a data type from the API endpoint (if possible).
                             var classReturned = DataTypeCreator.DeriveFromRoute(schema.RootPath, route);
+                            if (classReturned == null) { break; }
+
+                            //Add class.
                             Project.Namespaces["Data"].Add(classReturned);
 
                             //Add the method.
@@ -119,17 +122,39 @@ namespace Burrito
                             break;
                         case "POST":
                         case "post":
+                            //Figure out a data type it should receive.
+                            var postClassReturned = DataTypeCreator.DeriveFromRoute(schema.RootPath, route);
+                            if (postClassReturned == null) { break; }
+
+                            //Figure out the data type is should send.
+                            if (route.ExampleData == null)
+                            {
+                                Logger.Write("[ERR] - Cannot implement POST route '" + route.RelativeURL + "' without example data to send.", 1);
+                                break;
+                            }
+                            if (route.SentDataName == null)
+                            {
+                                Logger.Write("[ERR] - Sent data name not set for POST route '" + route.RelativeURL + "', skipping.", 1);
+                                break;
+                            }
+                            var postClass = DataTypeCreator.FromJObject(route.ExampleData, route.SentDataName);
+                            if (postClass == null) { break; }
+
+                            //Add classes.
+                            Project.Namespaces["Data"].Add(postClassReturned);
+                            Project.Namespaces["Data"].Add(postClass);
+
                             //Add the method.
                             moduleClass.Methods.Add(new POSTMethodModule()
                             {
                                 Async = route.Async,
                                 Route = route.RelativeURL,
                                 XMLSummary = route.GetSummary(),
-                                DataType = route.SentDataName,
+                                SentDataType = postClass,
+                                ReceivedDataType = postClassReturned,
                                 Name = route.GetMethodName()
                             });
                             break;
-
                     }
                 }
 

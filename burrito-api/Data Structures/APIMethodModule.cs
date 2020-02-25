@@ -27,7 +27,7 @@
     public class POSTMethodModule : APIMethodModule
     {
         //The data type to POST.
-        public string DataType;
+        public ClassModule SentDataType;
     }
 
     /// <summary>

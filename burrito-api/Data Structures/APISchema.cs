@@ -65,7 +65,7 @@ namespace Burrito
         [JsonProperty("returns")]
         public string ReturnedDataName;
 
-        //The name for the class derived from the sent data.
+        //The name for the class derived from the sent data (required).
         [JsonProperty("sent")]
         public string SentDataName;
 
