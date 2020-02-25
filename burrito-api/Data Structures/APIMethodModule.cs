@@ -1,4 +1,6 @@
-﻿namespace Burrito
+﻿using System.Collections.Generic;
+
+namespace Burrito
 {
     /// <summary>
     /// Represents a single API method within a class.
@@ -19,6 +21,9 @@
 
         //Name of the data type that is received back.
         public ClassModule ReceivedDataType;
+
+        //List of variables in the route that need to be put as params.
+        public List<string> RouteParams { get; set; } = new List<string>();
     }
 
     /// <summary>
@@ -33,5 +38,7 @@
     /// <summary>
     /// A single GET API method.
     /// </summary>
-    public class GETMethodModule : APIMethodModule { }
+    public class GETMethodModule : APIMethodModule
+    {
+    }
 }

@@ -62,6 +62,10 @@ namespace Burrito
         [JsonProperty("route")]
         public string RelativeURL;
 
+        //A valid URL for this route with variables filled out.
+        [JsonProperty("validroute")]
+        public string ValidURL;
+
         //The name for the class derived from the returned data. (required).
         [JsonProperty("returns")]
         public string ReturnedDataName;
@@ -88,6 +92,22 @@ namespace Burrito
         }
 
         /// <summary>
+        /// Gets the variables from the relative route.
+        /// </summary>
+        public List<string> GetRouteVariables()
+        {
+            //Variables are defined using "{varname}".
+            var matches = Regex.Matches(RelativeURL, "{[A-Za-z0-9_]+}");
+            List<string> vars = new List<string>();
+            foreach (Match match in matches)
+            {
+                vars.Add(match.Value.Substring(1, match.Length - 2));
+            }
+
+            return vars;
+        }
+
+        /// <summary>
         /// Returns a valid method name for this route.
         /// </summary>
         public string GetMethodName()
@@ -100,8 +120,12 @@ namespace Burrito
                 return "GetRoot";
             }
 
+            //Remove any variable parts in relative.
+            string cleanedURL = Regex.Replace(RelativeURL, "{[A-Za-z0-9_]+}", "");
+
             //Split the relative route up by /.
-            List<string> parts = RelativeURL.Split('/').ToList();
+            List<string> parts = cleanedURL.Split('/').ToList();
+
             string name = HTTPMethod.ToUpper().First().ToString() + HTTPMethod.ToLower().Substring(1);
             foreach (var part in parts)
             {
@@ -136,9 +160,23 @@ namespace Burrito
             }
 
             //Is the route relative URL even valid?
-            if (!Regex.IsMatch(RelativeURL, "^[A-Za-z_\\-\\.0-9\\?\\=%#@/]+$"))
+            if (!Regex.IsMatch(RelativeURL, "^[A-Za-z_\\-\\.0-9\\?\\=%#@/\\{\\}]+$"))
             {
                 Logger.Write("[ERR] - Invalid relative route provided ('" + RelativeURL + "'.", 1);
+                return false;
+            }
+
+            //If the route contains variables, then check if there's a validURL.
+            var routeVars = GetRouteVariables();
+            if (routeVars.Count > 0 && ValidURL == null)
+            {
+                Logger.Write("[ERR] - Must include a valid, full relative URL to use when putting variables in routes.", 1);
+                return false;
+            }
+
+            if (routeVars.Distinct().Count() != routeVars.Count)
+            {
+                Logger.Write("[ERR] - Route variables must be unique, duplicated names detected.", 1);
                 return false;
             }
 
@@ -183,6 +221,19 @@ namespace Burrito
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Returns the true relative URL of the route without variables.
+        /// </summary>
+        public string GetRealURL()
+        {
+            if (GetRouteVariables().Count > 0)
+            {
+                return ValidURL;
+            }
+
+            return RelativeURL;
         }
     }
 }

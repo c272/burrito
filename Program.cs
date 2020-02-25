@@ -23,7 +23,8 @@ namespace burritocli
             //Parse the arguments provided, set the runtime information.
             BurritoAPI.GenerationPath = argMan.GetValue("p") == null ? Environment.CurrentDirectory : argMan.GetValue("p");
             BurritoAPI.APISchemaPath = argMan.GetValue("s");
-            BurritoAPI.CompileOnly = argMan.GetFlag("dll");
+            BurritoAPI.CompileMode = argMan.GetFlag("c") || argMan.GetFlag("dll");
+            BurritoAPI.IncludeDebugInformation = argMan.GetFlag("debug");
 
             //Validate arguments.
             if (argMan.GetValue("s") == null)
@@ -55,8 +56,8 @@ namespace burritocli
                 }
             }
 
-            //Directory has any files in it?
-            if (Directory.GetFiles(BurritoAPI.GenerationPath).Count() != 0)
+            //Directory has any files in it, and not compiling?
+            if (!BurritoAPI.CompileMode && Directory.GetFiles(BurritoAPI.GenerationPath).Count() != 0)
             {
                 //Use a child directory of the name of the schema file.
                 string newDir = Path.Combine(BurritoAPI.GenerationPath, Path.GetFileNameWithoutExtension(BurritoAPI.APISchemaPath));

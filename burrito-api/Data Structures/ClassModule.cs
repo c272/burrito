@@ -51,7 +51,7 @@ namespace Burrito
         /// <summary>
         /// Generates the class code for this module.
         /// </summary>
-        public string GenerateCode(string ns)
+        public string GenerateCode(string ns, params string[] extraIncludes)
         {
             //Generate the includes.
             string code = "";
@@ -59,10 +59,15 @@ namespace Burrito
             {
                 code += "using " + include + ";\n";
             }
+            foreach (var include in extraIncludes)
+            {
+                code += "using " + include + ";\n";
+            }
             code += "\n";
 
             //Namespace and class header.
             code += "namespace " + ns + "\n{\n";
+            code += "//<summary>\n///The" + Name + " class, rolled up by Burrito.\n///</summary>\n";
             code += "public class " + Name + "\n{\n";
 
             //Generate every single static field.
@@ -104,6 +109,11 @@ namespace Burrito
 
                 //Build a list of parameters.
                 List<string> params_ = new List<string>();
+                foreach (var param in method.RouteParams)
+                {
+                    //parameters in relative route.
+                    params_.Add("object " + param);
+                }
                 if (method is POSTMethodModule)
                 {
                     var postMethod = (POSTMethodModule)method;
@@ -111,7 +121,7 @@ namespace Burrito
                 }
                 if (method.Async)
                 {
-                    params_.Add("APIReturnDelegate<" + method.ReceivedDataType + "> callback");
+                    params_.Add("BurritoCore.APICallReturnDelegate<" + method.ReceivedDataType.Name + "> callback");
                 }
 
                 //Add params, close.
@@ -138,10 +148,10 @@ namespace Burrito
                 {
                     code += "Async";
                 }
-                code += "<" + method.ReceivedDataType + ">(";
+                code += "<" + method.ReceivedDataType.Name + ">(";
 
                 //Required URL parameter, post data and async.
-                code += "_globals.RootURL + \"" + method.Route + "\", ";
+                code += "_globals.RootURL + $\"" + method.Route + "\", ";
                 if (method is POSTMethodModule)
                 {
                     code += "JsonConvert.SerializeObject(postData), ";

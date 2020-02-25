@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "burrito-cli", "burrito-cli.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "burrito-api", "burrito-api\burrito-api.csproj", "{9A8896FE-69C0-430D-9B41-030C94EF6B4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "burrito-core", "burrito-core\burrito-core.csproj", "{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{9A8896FE-69C0-430D-9B41-030C94EF6B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A8896FE-69C0-430D-9B41-030C94EF6B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A8896FE-69C0-430D-9B41-030C94EF6B4B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0B0F73C-CDFE-484B-BBD1-9F383D8120D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,9 +21,13 @@ namespace Burrito
         public static string APISchemaPath { get; set; } = null;
 
         //Whether to only compile the DLL and ignore writing to project.
-        public static bool CompileOnly { get; set; } = false;
+        public static bool CompileMode { get; set; } = false;
 
+        //The current project being compiled.
         public static ProjectModule Project { get; set; } = null;
+
+        //Whether to include debug information or not when compiling.
+        public static bool IncludeDebugInformation { get; set; } = false;
 
         //The verbosity level of the generator.
         //0 - No logging.
@@ -114,6 +118,7 @@ namespace Burrito
                             {
                                 Async = route.Async,
                                 Route = route.RelativeURL,
+                                RouteParams = route.GetRouteVariables(),
                                 XMLSummary = route.GetSummary(),
                                 Name = route.GetMethodName(),
                                 ReceivedDataType = classReturned
@@ -149,6 +154,7 @@ namespace Burrito
                                 Async = route.Async,
                                 Route = route.RelativeURL,
                                 XMLSummary = route.GetSummary(),
+                                RouteParams = route.GetRouteVariables(),
                                 SentDataType = postClass,
                                 ReceivedDataType = postClassReturned,
                                 Name = route.GetMethodName()
@@ -165,12 +171,13 @@ namespace Burrito
             ProjectCode code = Project.GenerateCode();
 
             //Decide what to do with it.
-            if (CompileOnly)
+            if (CompileMode)
             {
-                //code.CompileToDLL(GenerationPath);
+                code.CompileToDLL(GenerationPath);
             }
             else
             {
+                throw new NotImplementedException();
                 //code.CompileToProject(GenerationPath);
             }
 

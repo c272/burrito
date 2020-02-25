@@ -21,7 +21,7 @@ namespace Burrito
                 //GET route.
                 try
                 {
-                    response = HTTP.Get(baseURI + route.RelativeURL);
+                    response = HTTP.Get(baseURI + route.GetRealURL());
                 }
                 catch (Exception e)
                 {
@@ -34,7 +34,7 @@ namespace Burrito
                 //POST route.
                 try
                 {
-                    response = HTTP.Post(baseURI + route.RelativeURL, postData.ToString());
+                    response = HTTP.Post(baseURI + route.GetRealURL(), postData.ToString());
                 }
                 catch (Exception e)
                 {

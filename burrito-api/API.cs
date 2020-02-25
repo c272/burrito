@@ -13,16 +13,16 @@ using System.ComponentModel;
 namespace BurritoCore
 {
     /// <summary>
+    /// Delegate for an API call return.
+    /// </summary>
+    public delegate void APICallReturnDelegate<T>(T result);
+
+    /// <summary>
     /// Wrapper class for calling any given API and converting the result to a C# class.
     /// Josh rewrite this pls - Larry
     /// </summary>
     public static class API
     {
-        /// <summary>
-        /// Delegate for an API call return.
-        /// </summary>
-        public delegate void APICallReturnDelegate<T>(T result);
-
         /// <summary>
         /// Gets a specific API endpoint synchronously and returns it as a specific class.
         /// </summary>

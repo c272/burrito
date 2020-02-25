@@ -59,7 +59,7 @@ namespace Burrito
             var globalModule = new ClassModule("_globals");
             globalModule.StaticFields.Add(new Static("RootURL", "string")
             {
-                Value = RootURL
+                Value = "@\"" + RootURL + "\""
             });
             Namespaces["@"].Add(globalModule);
 
@@ -77,9 +77,10 @@ namespace Burrito
                 }
 
                 //Generate code for the namespace.
+                string thisNamespaceFull = (ns.Key == "@") ? Name : Name + "." + ns.Key;
                 foreach (var module in ns.Value)
                 {
-                    code.Files.Add(module.Name, module.GenerateCode(Name + "." + ns.Key));
+                    code.Files.Add(module.Name, module.GenerateCode(thisNamespaceFull, Name + ".Data"));
                 }
             }
 
