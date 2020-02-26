@@ -12,7 +12,7 @@ burrito -s schema.json
 Burrito also supports asynchronous methods using `Task`, and can include `POST`, `GET` and other HTTP methods, with custom URL parameters that are automatically added to API methods.
 
 ## Getting Started
-To get started using Burrito on Windows, all you'll need is .NET Framework 4.7.1 or later, and you can download one of the prebuilt binaries from the [Releases tab]([https://github.com/c272/dnd5e-cs/releases](https://github.com/c272/dnd5e-cs/releases)) on the main repository page.
+To get started using Burrito on Windows, all you'll need is .NET Framework 4.7.1 or later, and you can download one of the prebuilt binaries from the [Releases tab](https://github.com/c272/dnd5e-cs/releases) on the main repository page.
 
 If you're using Linux, however, you'll have to build the project using Mono and `mkbundle`. Make sure you have the following dependencies installed as a nuget packages before attempting to build with `mkbundle`:
 
