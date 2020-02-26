@@ -2,6 +2,7 @@
 <img src="https://raw.githubusercontent.com/c272/burrito/master/logo.png"/>
 <img src="https://img.shields.io/github/issues/c272/burrito"> <img src="https://img.shields.io/travis/c272/burrito"> <img src="https://img.shields.io/badge/%2ENET->=4.7.1-blue">
 </div>
+<br>
 
 A simple, easy to use command line API  wrapper generator, that will bundle up your favourite JSON APIs and  create a C# project out of it, and will **automagically** generate classes for the data that is sent back from the API. The most basic command usage for Burrito is including a single source file, like below:
 
