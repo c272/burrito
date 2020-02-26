@@ -80,7 +80,10 @@ namespace Burrito
                 string thisNamespaceFull = (ns.Key == "@") ? Name : Name + "." + ns.Key;
                 foreach (var module in ns.Value)
                 {
-                    code.Files.Add(module.Name, module.GenerateCode(thisNamespaceFull, Name + ".Data"));
+                    code.Files.Add(new ProjectFileInfo() {
+                        ClassName = module.Name,
+                        Namespace = ns.Key
+                    }, module.GenerateCode(thisNamespaceFull, Name + ".Data"));
                 }
             }
 

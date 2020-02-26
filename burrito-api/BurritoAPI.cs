@@ -177,8 +177,14 @@ namespace Burrito
             }
             else
             {
-                throw new NotImplementedException();
-                //code.CompileToProject(GenerationPath);
+                try
+                {
+                    code.CompileToProject(GenerationPath);
+                }
+                catch (Exception e)
+                {
+                    Logger.Write("[ERR] - Error writing project to disk: '" + e.Message + "'.", 1);
+                }
             }
 
             return code.Files.Count;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -177,6 +179,16 @@ namespace Burrito
 
             //Close class and namespace, done.
             code += "}\n}";
+
+            //Normalize whitespace and prettify using roslyn.
+            try
+            {
+                code = CSharpSyntaxTree.ParseText(code).GetRoot().NormalizeWhitespace().ToFullString();
+            }
+            catch (Exception e)
+            {
+                Logger.Write("[WARN] - Failed to beautify code, could not parse as C#: '" + e.Message + "'.", 1);
+            }
             return code;
         }
     }

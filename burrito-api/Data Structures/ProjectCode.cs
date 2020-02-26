@@ -16,12 +16,35 @@ namespace Burrito
     /// </summary>
     public class ProjectCode
     {
-        public Dictionary<string, string> Files = new Dictionary<string, string>();
-        public List<string> Dependencies = new List<string>()
+        public Dictionary<ProjectFileInfo, string> Files = new Dictionary<ProjectFileInfo, string>();
+        public List<string> CompileDependencies = new List<string>()
         {
             "Newtonsoft.Json.dll", //json libs
             "burrito-core.dll" //core
         };
+        public List<string> ProjectAsmDeps = new List<string>()
+        {
+            "Newtonsoft.Json",
+            "System",
+            "System.Linq",
+            "System.Data",
+            "burrito-core"
+        };
+
+        //Project include assembly descriptions. Bool is for including a hint path.
+        public Dictionary<string, bool> ProjectAsmDescriptions = new Dictionary<string, bool>()
+        {
+            {"burrito-core", true},
+            { "Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL", true },
+            { "System", false },
+            { "System.Core", false },
+            { "System.Xml.Linq", false },
+            { "Microsoft.CSharp", false },
+            { "System.Data", false },
+            { "System.Xml", false },
+            { "System.Net.Http", false }
+        };
+
         public string ProjectName;
 
         public ProjectCode(string name)
@@ -58,7 +81,7 @@ namespace Burrito
             deps.Add(MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location)); //make sure to add system
             deps.Add(MetadataReference.CreateFromFile(typeof(Enumerable).GetTypeInfo().Assembly.Location)); //linq
             deps.Add(MetadataReference.CreateFromFile(typeof(BurritoCore.API).GetTypeInfo().Assembly.Location)); //api
-            foreach (var dep in Dependencies)
+            foreach (var dep in CompileDependencies)
             {
                 deps.Add(MetadataReference.CreateFromFile(dep));
             }
@@ -112,7 +135,7 @@ namespace Burrito
             opt.SearchDirectories = new string[] { Environment.CurrentDirectory, AppDomain.CurrentDomain.BaseDirectory };
             
             //Setting input assemblies.
-            opt.InputAssemblies = new string[] { outputPath }.Concat(Dependencies).ToArray();
+            opt.InputAssemblies = new string[] { outputPath }.Concat(CompileDependencies).ToArray();
 
             //Redirecting console input temporarily.
             using (var writer = new ConsoleCatcher())
@@ -145,9 +168,118 @@ namespace Burrito
             }
         }
 
-        internal void CompileToProject(string generationPath)
+        /// <summary>
+        /// Compiles this project to a physical project on disk.
+        /// </summary>
+        public void CompileToProject(string generationPath)
         {
-            throw new NotImplementedException();
+            //Generate all basic files, separated into folders by namespace.
+            List<string> paths = new List<string>();
+            foreach (var file in Files)
+            {
+                //Create the containing folder.
+                Directory.CreateDirectory(file.Key.GetFolderString(generationPath));
+
+                //Write to the file.
+                string filePath = Path.Combine(file.Key.GetFolderString(generationPath), file.Key.ClassName + ".cs");
+                paths.Add(filePath);
+                File.WriteAllText(filePath, file.Value);
+            }
+
+            //Copy required DLLs to the Dependencies folder.
+            string depsFolder = Path.Combine(generationPath, "Dependencies");
+            Directory.CreateDirectory(depsFolder);
+            foreach (var dll in ProjectAsmDeps)
+            {
+                try
+                {
+                    File.Copy(dll + ".dll", Path.Combine(depsFolder, dll + ".dll"), true);
+                }
+                catch (Exception e)
+                {
+                    if (dll == "System") { continue; } //ignore missing system.dll
+                    Logger.Write("[WARN] - Failed to copy dependency DLL '" + dll + "'. Reference left.", 1);
+                }
+            }
+
+            //Write the .csproj file to include all source files.
+            string csproj = "<Project ToolsVersion=\"4.0\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\" >";
+
+            //MSBuild wizardry.
+            csproj += "<Import Project=\"$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props\" Condition=\"Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')\" />";
+
+            //Add the configuration propertygroup.
+            csproj += "<PropertyGroup>";
+            csproj += "<Configuration Condition=\" '$(Configuration)' == '' \">Debug</Configuration>";
+            csproj += "<Platform Condition=\" '$(Platform)' == '' \">AnyCPU</Platform>";
+            csproj += "<OutputType>Library</OutputType>";
+            csproj += "<AssemblyName>" + ProjectName + "</AssemblyName>";
+            csproj += "<TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>";
+            csproj += "</PropertyGroup>";
+
+            //Add the build combinations.
+            csproj += "<PropertyGroup Condition=\" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' \">" +
+                      "<PlatformTarget>AnyCPU</PlatformTarget><DebugSymbols>true</DebugSymbols><DebugType>full</DebugType>" +
+                      "<Optimize>false</Optimize>" +
+                      "<OutputPath>bin\\Debug\\</OutputPath>" +
+                      "<DefineConstants>DEBUG;TRACE</DefineConstants>" +
+                      "<ErrorReport>prompt</ErrorReport>" +
+                      "<WarningLevel>4</WarningLevel>" +
+                      "</PropertyGroup>" +
+                      "<PropertyGroup Condition=\"'$(Configuration)|$(Platform)'=='Release|AnyCPU'\">" +
+                      "<PlatformTarget>AnyCPU</PlatformTarget>" +
+                      "<DebugType>pdbonly</DebugType>" +
+                      "<Optimize>true</Optimize>" +
+                      "<OutputPath>bin\\Release\\</OutputPath>" +
+                      "<DefineConstants>TRACE</DefineConstants>" +
+                      "<ErrorReport>prompt</ErrorReport>" +
+                      "<WarningLevel>4</WarningLevel>" +
+                      "</PropertyGroup>";
+
+            //Add the references.
+            csproj += "<ItemGroup>";
+            foreach (var dep in ProjectAsmDescriptions)
+            {
+                csproj += "<Reference Include=\"" + dep.Key + "\" >";
+                if (dep.Value)
+                {
+                    csproj += "<HintPath>Dependencies\\" + dep.Key + ".dll</HintPath>";
+                }
+                csproj += "</Reference>";
+            }
+            csproj += "</ItemGroup>";
+
+            //Add files to include (local refs).
+            csproj += "<ItemGroup>";
+            foreach (var file in paths)
+            {
+                csproj += "<Compile Include=\"" + file.Substring(generationPath.Length + 1) + "\" />";
+            }
+            csproj += "</ItemGroup>";
+
+            //Add the build target.
+            csproj += "<Import Project=\"$(MSBuildToolsPath)\\Microsoft.CSharp.targets\" />";
+
+            //Close file.
+            csproj += "</Project>";
+            
+            //Write the .csproj to file.
+            string csprojLoc = Path.Combine(generationPath, ProjectName + ".csproj");
+            File.WriteAllText(csprojLoc, csproj);
+        }
+    }
+
+    /// <summary>
+    /// Represents information about a given project file.
+    /// </summary>
+    public class ProjectFileInfo
+    {
+        public string Namespace;
+        public string ClassName;
+        public string GetFolderString(string basePath)
+        {
+            if (Namespace == "@") { return basePath; }
+            return Path.Combine(basePath, Namespace);
         }
     }
 }
