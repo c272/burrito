@@ -98,22 +98,6 @@ namespace Burrito
             //Loop through the routes and generate code modules for each of them.
             foreach (var module in schema.Sections)
             {
-                //If "generate async and sync" is on, duplicate async routes and turn off async.
-                if (GenerateAsyncAndSync)
-                {
-                    for (int i = 0; i < module.Routes.Count; i++)
-                    {
-                        //Async? Duplicate route without the async.
-                        if (module.Routes[i].Async)
-                        {
-                            var newRoute = module.Routes[i];
-                            newRoute.Async = false;
-                            module.Routes.Insert(i, newRoute);
-                            i++;
-                        }
-                    }
-                }
-
                 var moduleClass = new ClassModule(module.Name);
                 foreach (var route in module.Routes)
                 {

@@ -16,7 +16,7 @@ namespace burritocli
 
         public List<string> validArgs = new List<string>()
         {
-            "p","s","c","dll","debug","nnc"
+            "p","s","c","dll","debug","nnc","aas"
         };
 
         //Parses the given arguments.

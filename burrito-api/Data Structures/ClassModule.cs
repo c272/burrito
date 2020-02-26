@@ -104,8 +104,37 @@ namespace Burrito
             code += "\n";
 
             //Generate every single method.
-            foreach (var method in Methods)
+            GenerateMethods(ref code, Methods);
+
+            //Close class and namespace, done.
+            code += "}\n}";
+
+            //Normalize whitespace and prettify using roslyn.
+            try
             {
+                code = CSharpSyntaxTree.ParseText(code).GetRoot().NormalizeWhitespace().ToFullString();
+            }
+            catch (Exception e)
+            {
+                Logger.Write("[WARN] - Failed to beautify code, could not parse as C#: '" + e.Message + "'.", 1);
+            }
+            return code;
+        }
+
+        /// <summary>
+        /// Generates method code for the supplied list of methods.
+        /// </summary>
+        private void GenerateMethods(ref string code, List<APIMethodModule> methods)
+        {
+            //Generate every single method.
+            foreach (var method in methods)
+            {
+                //If generate async and sync is on, and async, generate the synchronous method first.
+                if (method.Async && BurritoAPI.GenerateAsyncAndSync)
+                {
+                    GenerateMethods(ref code, new List<APIMethodModule>() { method });
+                }
+
                 //XML summary.
                 code += "\n";
                 code += "///<summary>\n///" + method.XMLSummary.Replace("\n", "") + "\n///</summary>\n";
@@ -120,7 +149,7 @@ namespace Burrito
                 {
                     code += "public static " + method.ReceivedDataType.Name + " ";
                 }
-                
+
                 //Open parameters.
                 code += method.Name + "(";
 
@@ -184,20 +213,6 @@ namespace Burrito
                 //Close the parameters and method.
                 code += ");\n}\n";
             }
-
-            //Close class and namespace, done.
-            code += "}\n}";
-
-            //Normalize whitespace and prettify using roslyn.
-            try
-            {
-                code = CSharpSyntaxTree.ParseText(code).GetRoot().NormalizeWhitespace().ToFullString();
-            }
-            catch (Exception e)
-            {
-                Logger.Write("[WARN] - Failed to beautify code, could not parse as C#: '" + e.Message + "'.", 1);
-            }
-            return code;
         }
     }
 
