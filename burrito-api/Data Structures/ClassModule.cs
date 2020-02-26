@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +27,8 @@ namespace Burrito
             "System.Linq",
             "System.Text",
             "System.Threading.Tasks",
-            "Newtonsoft.Json"
+            "Newtonsoft.Json",
+            "Newtonsoft.Json.Linq"
         };
 
         //The list of methods to implement within the class.
@@ -81,13 +84,20 @@ namespace Burrito
             //Generate every single field.
             foreach (var field in Fields)
             {
+                string fieldName = field.Name;
+                if (BurritoAPI.FollowNamingConventions)
+                {
+                    fieldName = char.ToUpper(fieldName[0]) + fieldName.Substring(1);
+                    code += "[JsonProperty(\"" + field.Name + "\")]";
+                }
+
                 if (field.IsList)
                 {
-                    code += "public List<" + field.TypeName + "> " + field.Name + ";\n";
+                    code += "public List<" + field.TypeName + "> " + fieldName + ";\n";
                 }
                 else
                 {
-                    code += "public " + field.TypeName + " " + field.Name + ";\n";
+                    code += "public " + field.TypeName + " " + fieldName + ";\n";
                 }
             }
 
@@ -177,6 +187,16 @@ namespace Burrito
 
             //Close class and namespace, done.
             code += "}\n}";
+
+            //Normalize whitespace and prettify using roslyn.
+            try
+            {
+                code = CSharpSyntaxTree.ParseText(code).GetRoot().NormalizeWhitespace().ToFullString();
+            }
+            catch (Exception e)
+            {
+                Logger.Write("[WARN] - Failed to beautify code, could not parse as C#: '" + e.Message + "'.", 1);
+            }
             return code;
         }
     }

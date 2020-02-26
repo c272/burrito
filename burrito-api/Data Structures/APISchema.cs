@@ -62,7 +62,7 @@ namespace Burrito
         [JsonProperty("route")]
         public string RelativeURL;
 
-        //A valid URL for this route with variables filled out.
+        //A valid URL for this route with variables filled out (required with routevars).
         [JsonProperty("validroute")]
         public string ValidURL;
 
@@ -88,7 +88,9 @@ namespace Burrito
         public string GetSummary()
         {
             if (Description != null) { return Description; }
-            return HTTPMethod + "s /" + RelativeURL + "/.";
+
+            //If it ends in /, don't append one.
+            return (RelativeURL.EndsWith("/")) ? HTTPMethod + "s /" + RelativeURL + "." : HTTPMethod + "s /" + RelativeURL + "/.";
         }
 
         /// <summary>

@@ -14,11 +14,22 @@ namespace burritocli
         public Dictionary<string, string> Values { get; private set; } = new Dictionary<string, string>();
         public List<string> Flags { get; private set; } = new List<string>();
 
+        public List<string> validArgs = new List<string>()
+        {
+            "p","s","c","dll","debug","nnc"
+        };
+
         //Parses the given arguments.
         public ArgumentParser(string[] args)
         {
             for (int i=0; i<args.Length; i++)
             {
+                if (!validArgs.Contains(args[i]))
+                {
+                    Logger.Exit("Invalid argument supplied '" + args[i] + "'.");
+                    return;
+                }
+
                 //Is it a value?
                 if (i != args.Length - 1 && !args[i+1].StartsWith("-"))
                 {
