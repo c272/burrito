@@ -116,7 +116,8 @@ namespace Burrito
                         case "GET":
                         case "get":
                             //Figure out a data type from the API endpoint (if possible).
-                            var classReturned = DataTypeCreator.DeriveFromRoute(schema.RootPath, route);
+                            bool isList = false;
+                            var classReturned = DataTypeCreator.DeriveFromRoute(schema.RootPath, route, ref isList);
                             if (classReturned == null) { break; }
 
                             //Add class.
@@ -130,13 +131,15 @@ namespace Burrito
                                 RouteParams = route.GetRouteVariables(),
                                 XMLSummary = route.GetSummary(),
                                 Name = route.GetMethodName(),
-                                ReceivedDataType = classReturned
+                                ReceivedDataType = classReturned,
+                                ReturnsList = isList
                             });
                             break;
                         case "POST":
                         case "post":
                             //Figure out a data type it should receive.
-                            var postClassReturned = DataTypeCreator.DeriveFromRoute(schema.RootPath, route, route.ExampleData);
+                            bool returnsList = false;
+                            var postClassReturned = DataTypeCreator.DeriveFromRoute(schema.RootPath, route, ref returnsList, route.ExampleData);
                             if (postClassReturned == null) { break; }
 
                             //Figure out the data type is should send.
@@ -166,7 +169,8 @@ namespace Burrito
                                 RouteParams = route.GetRouteVariables(),
                                 SentDataType = postClass,
                                 ReceivedDataType = postClassReturned,
-                                Name = route.GetMethodName()
+                                Name = route.GetMethodName(),
+                                ReturnsList = returnsList
                             });
                             break;
                     }

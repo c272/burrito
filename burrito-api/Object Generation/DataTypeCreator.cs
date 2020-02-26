@@ -12,7 +12,7 @@ namespace Burrito
         /// <summary>
         /// Derives an API data type from a given HTTP GET/POST route.
         /// </summary>
-        public static ClassModule DeriveFromRoute(string baseURI, Route route, JObject postData=null)
+        public static ClassModule DeriveFromRoute(string baseURI, Route route, ref bool isList, JObject postData=null)
         {
             //Attempt to ping the route for a response.
             string response;
@@ -47,16 +47,42 @@ namespace Burrito
             JObject jobj;
             try
             {
+                //Is it an object?
                 jobj = JObject.Parse(response);
+                isList = false;
+
+                //Construct a class from it.
+                return FromJObject(jobj, route.ReturnedDataName);
             }
             catch
             {
-                Logger.Write("[ERR] - Failed to derive data from route '" + route.RelativeURL + "', invalid JSON response.", 1);
-                return null;
-            }
+                //Maybe it's an array?
+                try
+                {
+                    var jarr = JArray.Parse(response);
 
-            //Construct a class from it.
-            return FromJObject(jobj, route.ReturnedDataName);
+                    //Yes, set method return type as array.
+                    isList = true;
+                    
+                    //An array of what?
+                    if (jarr.Count == 0)
+                    {
+                        Logger.Write("[WARN] - Cannot derive type from empty array, assuming as an empty. (route '" + route.RelativeURL + "')", 2);
+                        return BurritoAPI.Project.Namespaces["@"].Find(x => x.Name == "_empty");
+                    }
+
+                    //Deriving type.
+                    var field = GenerateField(route.ReturnedDataName, "", jarr[0]);
+
+                    //Return a dummy class with the right typename.
+                    return new ClassModule(field.TypeName);
+                }
+                catch
+                {
+                    Logger.Write("[ERR] - Failed to derive data from route '" + route.RelativeURL + "', invalid JSON response. (route '" + route.RelativeURL + "')", 1);
+                    return null;
+                }
+            }
         }
 
         /// <summary>
@@ -70,12 +96,12 @@ namespace Burrito
             //If the name or JObject is null, invalid.
             if (jobj == null)
             {
-                Logger.Write("[ERR] - Invalid JSON data given to create a class module from, no data.", 1);
+                Logger.Write("[ERR] - Invalid JSON data given to create a class module from, no data. ('" + name + "')", 1);
                 return null;
             }
             if (name == null)
             {
-                Logger.Write("[ERR] - No name provided for creating returned data from a route.", 1);
+                Logger.Write("[ERR] - No name provided for creating returned data from a route. ('" + name + "')", 1);
                 return null;
             }
 
@@ -88,6 +114,9 @@ namespace Burrito
             return module;
         }
 
+        /// <summary>
+        /// Generates a field to use in a generated class.
+        /// </summary>
         private static Field GenerateField(string rootName, string name, JToken value)
         {
             switch (value.Type)
@@ -98,7 +127,7 @@ namespace Burrito
                     var arr = (JArray)value;
                     if (arr.Count == 0)
                     {
-                        Logger.Log("[WARN] - Cannot generate a type from an empty array. Leaving an empty list type here.");
+                        Logger.Log("[WARN] - Cannot generate a type from an empty array. Leaving an empty list type here. ('" + name + "')");
                         return new Field(name, ClassModule.Empty());
                     }
 
@@ -138,11 +167,11 @@ namespace Burrito
                 case JTokenType.String:
                     return new Field(name, "string");
                 case JTokenType.Null:
-                    Logger.Write("[WARN] - Null type in JSON at property '" + name + "', assumed as an object.", 1);
+                    Logger.Write("[WARN] - Null type in JSON at property '" + name + "', assumed as an object. ('" + name + "')", 2);
                     return new Field(name, "object ");
 
                 default:
-                    Logger.Write("[WARN] - Unsupported type in JSON to create a class from: '" + value.Type.ToString() + "' for generated data class '" + name + "'. Skipped property.", 1);
+                    Logger.Write("[WARN] - Unsupported type in JSON to create a class from: '" + value.Type.ToString() + "' for generated data class '" + name + "'. Skipped property.", 2);
                     return null;
             }
         }

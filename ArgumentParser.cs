@@ -24,7 +24,7 @@ namespace burritocli
         {
             for (int i=0; i<args.Length; i++)
             {
-                if (!validArgs.Contains(args[i]))
+                if (args[i].Length == 0 || !validArgs.Contains(args[i].Substring(1)))
                 {
                     Logger.Exit("Invalid argument supplied '" + args[i] + "'.");
                     return;

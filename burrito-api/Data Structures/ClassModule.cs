@@ -116,7 +116,7 @@ namespace Burrito
             }
             catch (Exception e)
             {
-                Logger.Write("[WARN] - Failed to beautify code, could not parse as C#: '" + e.Message + "'.", 1);
+                Logger.Write("[WARN] - Failed to beautify code, could not parse as C#: '" + e.Message + "'.", 2);
             }
             return code;
         }
@@ -132,7 +132,9 @@ namespace Burrito
                 //If generate async and sync is on, and async, generate the synchronous method first.
                 if (method.Async && BurritoAPI.GenerateAsyncAndSync)
                 {
-                    GenerateMethods(ref code, new List<APIMethodModule>() { method });
+                    var methodCopy = method.Clone();
+                    methodCopy.Async = false;
+                    GenerateMethods(ref code, new List<APIMethodModule>() { methodCopy });
                 }
 
                 //XML summary.
@@ -147,7 +149,7 @@ namespace Burrito
                 }
                 else
                 {
-                    code += "public static " + method.ReceivedDataType.Name + " ";
+                    code += "public static " + method.GetReturnType() + " ";
                 }
 
                 //Open parameters.
@@ -162,7 +164,7 @@ namespace Burrito
                 }
                 if (method.Async)
                 {
-                    params_.Add("BurritoCore.APICallReturnDelegate<" + method.ReceivedDataType.Name + "> callback");
+                    params_.Add("BurritoCore.APICallReturnDelegate<" + method.GetReturnType() + "> callback");
                 }
 
                 //Optional template params Templates are replaced by blank by default.
@@ -196,7 +198,7 @@ namespace Burrito
                 {
                     code += "Async";
                 }
-                code += "<" + method.ReceivedDataType.Name + ">(";
+                code += "<" + method.GetReturnType() + ">(";
 
                 //Required URL parameter, post data and async.
                 code += "_globals.RootURL + $\"" + method.Route + "\", ";

@@ -167,9 +167,9 @@ namespace Burrito
             }
 
             //Is the route relative URL even valid?
-            if (!Regex.IsMatch(RelativeURL, "^[A-Za-z_\\-\\.0-9\\?\\=%#@/\\{\\}]+$"))
+            if (!Regex.IsMatch(RelativeURL, "^[A-Za-z_\\-\\.0-9\\?\\=%#&@/\\{\\}]+$"))
             {
-                Logger.Write("[ERR] - Invalid relative route provided ('" + RelativeURL + "'.", 1);
+                Logger.Write("[ERR] - Invalid relative route provided ('" + RelativeURL + "').", 1);
                 return false;
             }
 

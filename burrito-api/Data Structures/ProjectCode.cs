@@ -164,7 +164,7 @@ namespace Burrito
             }
             catch
             {
-                Logger.Write("[WARN] - Failed renaming packed (.dll.packed) to normal (.dll), insufficient permissions. Job still completed.", 1);
+                Logger.Write("[WARN] - Failed renaming packed (.dll.packed) to normal (.dll), insufficient permissions. Job still completed.", 2);
             }
         }
 
@@ -198,7 +198,7 @@ namespace Burrito
                 catch (Exception e)
                 {
                     if (dll == "System") { continue; } //ignore missing system.dll
-                    Logger.Write("[WARN] - Failed to copy dependency DLL '" + dll + "'. Reference left.", 1);
+                    Logger.Write("[WARN] - Failed to copy dependency DLL '" + dll + "'. Reference left.", 2);
                 }
             }
 

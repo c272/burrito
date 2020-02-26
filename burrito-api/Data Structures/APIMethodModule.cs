@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Burrito
 {
@@ -24,6 +25,32 @@ namespace Burrito
 
         //List of variables in the route that need to be put as params.
         public List<string> RouteParams { get; set; } = new List<string>();
+
+        //Whether this method returns a list or not.
+        public bool ReturnsList { get; set; }
+
+        /// <summary>
+        /// Clones this API method module.
+        /// </summary>
+        public APIMethodModule Clone()
+        {
+            return (APIMethodModule)this.MemberwiseClone();
+        }
+
+        /// <summary>
+        /// Gets a string representation of this method's return type.
+        /// </summary>
+        public string GetReturnType()
+        {
+            if (ReturnsList)
+            {
+                return "List<" + ReceivedDataType.Name + ">";
+            }
+            else
+            {
+                return ReceivedDataType.Name;
+            }
+        }
     }
 
     /// <summary>
