@@ -23,6 +23,9 @@ namespace Burrito
         //Whether to only compile the DLL and ignore writing to project.
         public static bool CompileMode { get; set; } = false;
 
+        //Whether the program should generate fields following C# naming conventions.
+        public static bool FollowNamingConventions { get; set; }
+
         //The current project being compiled.
         public static ProjectModule Project { get; set; } = null;
 
@@ -40,6 +43,9 @@ namespace Burrito
             set { Logger.Verbosity = value; }
         }
 
+        /// <summary>
+        /// Run the currently set up instance of Burrito.
+        /// </summary>
         public static int Run()
         {
             //Try and deserialize the schema.

@@ -62,7 +62,7 @@ namespace Burrito
         [JsonProperty("route")]
         public string RelativeURL;
 
-        //A valid URL for this route with variables filled out.
+        //A valid URL for this route with variables filled out (required with routevars).
         [JsonProperty("validroute")]
         public string ValidURL;
 

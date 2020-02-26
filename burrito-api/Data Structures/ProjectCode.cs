@@ -211,13 +211,14 @@ namespace Burrito
             //Add the configuration propertygroup.
             csproj += "<PropertyGroup>";
             csproj += "<Configuration Condition=\" '$(Configuration)' == '' \">Debug</Configuration>";
+            csproj += "<GenerateDocumentationFile>true</GenerateDocumentationFile>";
             csproj += "<Platform Condition=\" '$(Platform)' == '' \">AnyCPU</Platform>";
             csproj += "<OutputType>Library</OutputType>";
             csproj += "<AssemblyName>" + ProjectName + "</AssemblyName>";
             csproj += "<TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>";
             csproj += "</PropertyGroup>";
 
-            //Add the build combinations.
+            //Add the build combinations for release and debug.
             csproj += "<PropertyGroup Condition=\" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' \">" +
                       "<PlatformTarget>AnyCPU</PlatformTarget><DebugSymbols>true</DebugSymbols><DebugType>full</DebugType>" +
                       "<Optimize>false</Optimize>" +
@@ -245,6 +246,7 @@ namespace Burrito
                 {
                     csproj += "<HintPath>Dependencies\\" + dep.Key + ".dll</HintPath>";
                 }
+                csproj += "<SpecificVersion>False</SpecificVersion>";
                 csproj += "</Reference>";
             }
             csproj += "</ItemGroup>";
