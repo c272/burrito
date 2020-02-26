@@ -195,9 +195,9 @@ namespace Burrito
                 {
                     File.Copy(dll + ".dll", Path.Combine(depsFolder, dll + ".dll"), true);
                 }
-                catch (Exception e)
+                catch
                 {
-                    if (dll == "System") { continue; } //ignore missing system.dll
+                    if (dll == "System" || dll == "System.Linq") { continue; } //ignore missing system.dll & linq
                     Logger.Write("[WARN] - Failed to copy dependency DLL '" + dll + "'. Reference left.", 2);
                 }
             }

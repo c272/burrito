@@ -33,11 +33,19 @@ namespace BurritoCore
             request.Method = "GET";
 
             //Get a response.
-            var response = (HttpWebResponse)request.GetResponse();
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
-            //Cast it to the given class.
-            return JsonConvert.DeserializeObject<T>(responseString);
+                //Cast it to the given class.
+                return JsonConvert.DeserializeObject<T>(responseString);
+            }
+            catch (Exception e)
+            {
+                //Throw a nice exception up.
+                throw new Exception("Failed to GET API route '" + webAddr + "', " + e.Message);
+            }
         }
 
         /// <summary>
@@ -57,11 +65,19 @@ namespace BurritoCore
             }
 
             //Get a response.
-            var response = (HttpWebResponse)request.GetResponse();
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
-            //Cast it to the given class.
-            return JsonConvert.DeserializeObject<T>(responseString);
+                //Cast it to the given class.
+                return JsonConvert.DeserializeObject<T>(responseString);
+            }
+            catch (Exception e)
+            {
+                //Throw a nice exception up.
+                throw new Exception("Failed to POST API route '" + webAddr + "', " + e.Message);
+            }
         }
 
         /// <summary>
