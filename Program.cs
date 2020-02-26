@@ -25,7 +25,7 @@ namespace burritocli
             BurritoAPI.APISchemaPath = argMan.GetValue("s");
             BurritoAPI.CompileMode = argMan.GetFlag("c") || argMan.GetFlag("dll");
             BurritoAPI.IncludeDebugInformation = argMan.GetFlag("debug");
-            BurritoAPI.FollowNamingConventions = argMan.GetFlag("fnc");
+            BurritoAPI.FollowNamingConventions = !argMan.GetFlag("nnc");
 
             //Validate arguments.
             if (argMan.GetValue("s") == null)
