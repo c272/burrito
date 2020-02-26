@@ -112,7 +112,12 @@ namespace Burrito
         /// </summary>
         public string GetMethodName()
         {
-            if (MethodName != null) { return MethodName; }
+            if (MethodName != null) 
+            { 
+                if (Async)
+                    return MethodName + "Async";
+                return MethodName;
+            }
 
             //Root method is just called "root".
             if (RelativeURL == "")
