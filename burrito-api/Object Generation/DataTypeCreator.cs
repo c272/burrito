@@ -108,7 +108,13 @@ namespace Burrito
             //Create the class module.
             foreach (var prop in jobj.Properties())
             {
-                module.Fields.Add(GenerateField(name, prop.Name, prop.Value));
+                var field = GenerateField(name, prop.Name, prop.Value);
+                if (field.Name.ToUpper() == module.Name.ToUpper())
+                {
+                    //Naming conflict between module and field, rename module with extra "_".
+                    module.Name += "_";
+                }
+                module.Fields.Add(field);
             }
 
             return module;
@@ -127,7 +133,7 @@ namespace Burrito
                     var arr = (JArray)value;
                     if (arr.Count == 0)
                     {
-                        Logger.Log("[WARN] - Cannot generate a type from an empty array. Leaving an empty list type here. ('" + name + "')");
+                        Logger.Write("[WARN] - Cannot generate a type from an empty array. Leaving an empty list type here. ('" + name + "')", 2);
                         return new Field(name, ClassModule.Empty());
                     }
 

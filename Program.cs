@@ -28,6 +28,14 @@ namespace burritocli
             BurritoAPI.FollowNamingConventions = !argMan.GetFlag("nnc");
             BurritoAPI.GenerateAsyncAndSync = argMan.GetFlag("aas");
 
+            //Try to parse verbosity level.
+            string verbosityLvl = argMan.GetValue("v");
+            int vblvl;
+            if (verbosityLvl != null && int.TryParse(verbosityLvl, out vblvl))
+            {
+                BurritoAPI.VerbosityLevel = vblvl;
+            }
+
             //Validate arguments.
             if (argMan.GetValue("s") == null)
             {
