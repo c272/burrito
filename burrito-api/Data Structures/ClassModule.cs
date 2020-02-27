@@ -134,6 +134,10 @@ namespace Burrito
                 {
                     var methodCopy = method.Clone();
                     methodCopy.Async = false;
+                    if (methodCopy.Name.EndsWith("Async"))
+                    {
+                        methodCopy.Name = methodCopy.Name.Substring(0, methodCopy.Name.Length - "Async".Length);
+                    }
                     GenerateMethods(ref code, new List<APIMethodModule>() { methodCopy });
                 }
 

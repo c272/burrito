@@ -193,7 +193,7 @@ namespace Burrito
             {
                 try
                 {
-                    File.Copy(dll + ".dll", Path.Combine(depsFolder, dll + ".dll"), true);
+                    File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dll + ".dll"), Path.Combine(depsFolder, dll + ".dll"), true);
                 }
                 catch
                 {
