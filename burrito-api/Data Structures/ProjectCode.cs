@@ -269,6 +269,49 @@ namespace Burrito
             string csprojLoc = Path.Combine(generationPath, ProjectName + ".csproj");
             File.WriteAllText(csprojLoc, csproj);
         }
+
+        /// <summary>
+        /// Generates a NuGet specification for the project. at the generation path.
+        /// </summary>
+        public void GenerateNuspec(string generationPath)
+        {
+            //Add generic template information.
+            string nuspec = "";
+            nuspec += @"<?xml version=""1.0"" encoding=""utf - 8""?>";
+            nuspec += "<package>";
+            nuspec += "<metadata>";
+            nuspec += "<id>$id$</id><version>$version$</version><title>$title$</title><authors>$author$</authors><owners>$author$</owners>";
+            nuspec += "<requireLicenseAcceptance>false</requireLicenseAcceptance>";
+            nuspec += "<license type=\"expression\">MIT</license>";
+
+            //URL and logo of project.
+            nuspec += "<projectUrl>{Your project page URL here.}</projectUrl>";
+            nuspec += "<icon>{Your icon file reference here.}</icon>";
+
+            //Description.
+            nuspec += "<description>$description$</description>";
+
+            //Release notes & copyright.
+            nuspec += "<releaseNotes>{Your latest release changelog here.}</releaseNotes>";
+            nuspec += "<copyright>(c) {Name} {Year}</copyright>";
+            nuspec += "<tags>{Space separated tags here.}</tags>";
+
+            //Dependencies.
+            nuspec += "<dependencies><group targetFramework=\".NETFramework4.7.1\">";
+            nuspec += "<dependency id=\"Newtonsoft.Json\" version=\"12.0.0.0\"/>";
+            nuspec += "</group></dependencies>";
+            nuspec += "</metadata>";
+
+            //Files section.
+            nuspec += "<files>";
+            nuspec += "<file src=\"{Your relative logo path here.}\" target=\"\" />";
+            nuspec += "</files>";
+
+            nuspec += "</package>";
+
+            //Write the .nuspec to file.
+            File.WriteAllText(Path.Combine(generationPath, ProjectName + ".nuspec"), nuspec);
+        }
     }
 
     /// <summary>

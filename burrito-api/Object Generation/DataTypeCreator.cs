@@ -105,6 +105,13 @@ namespace Burrito
                 return null;
             }
 
+            //Is the name a reserved word?
+            while (module.Name.IsReservedWord())
+            {
+                //Stick underscores on it.
+                module.Name += "_";
+            }
+
             //Create the class module.
             foreach (var prop in jobj.Properties())
             {

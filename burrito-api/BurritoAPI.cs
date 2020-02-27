@@ -25,15 +25,18 @@ namespace Burrito
 
         //Whether the program should generate fields following C# naming conventions.
         public static bool FollowNamingConventions { get; set; }
-
-        //The current project being compiled.
-        public static ProjectModule Project { get; set; } = null;
-
+        
         //Whether to include debug information or not when compiling.
         public static bool IncludeDebugInformation { get; set; } = false;
 
         //Whether to generate asynchronous AND synchronous methods.
         public static bool GenerateAsyncAndSync { get; set; } = false;
+
+        //Whether to generate a NuGet specification for the project.
+        public static bool GenerateNuspec { get; set; } = false;
+
+        //The current project being compiled.
+        public static ProjectModule Project { get; set; } = null;
 
         //The verbosity level of the generator.
         //0 - No logging.
@@ -75,6 +78,12 @@ namespace Burrito
             {
                 Logger.Write("[ERR] - Invalid schema name given. Must only be alphanumeric or underscores.", 1);
                 return 0;
+            }
+
+            //If the root path doesn't end with a "/", add it on.
+            if (!schema.RootPath.EndsWith("/"))
+            {
+                schema.RootPath += "/";
             }
 
             //Create a project module with the given schema and namespaces.
@@ -198,6 +207,12 @@ namespace Burrito
                 {
                     Logger.Write("[ERR] - Error writing project to disk: '" + e.Message + "'.", 1);
                 }
+            }
+
+            //If a NuSpec needs to be generated, do it now.
+            if (GenerateNuspec)
+            {
+                code.GenerateNuspec(GenerationPath);
             }
 
             return code.Files.Count;

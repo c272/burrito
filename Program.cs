@@ -27,6 +27,7 @@ namespace burritocli
             BurritoAPI.IncludeDebugInformation = argMan.GetFlag("debug");
             BurritoAPI.FollowNamingConventions = !argMan.GetFlag("nnc");
             BurritoAPI.GenerateAsyncAndSync = argMan.GetFlag("aas");
+            BurritoAPI.GenerateNuspec = argMan.GetFlag("nuspec");
 
             //Try to parse verbosity level.
             string verbosityLvl = argMan.GetValue("v");
