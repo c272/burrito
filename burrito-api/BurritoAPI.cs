@@ -219,6 +219,23 @@ namespace Burrito
         }
 
         /// <summary>
+        /// Checks if a provided file is a valid API schema or not.
+        /// </summary>
+        public static bool IsValidSchema(string filePath)
+        {
+            try
+            {
+                string text = File.ReadAllText(filePath);
+                var schema = JsonConvert.DeserializeObject<APISchema>(text);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Sets the logger used by Burrito to the provided method.
         /// </summary>
         public static void SetLogger(Action<string> logger)

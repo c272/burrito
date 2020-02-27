@@ -40,9 +40,38 @@ namespace burritocli
             //Validate arguments.
             if (argMan.GetValue("s") == null)
             {
-                Logger.Log("Missing an API schema definition to generate from (usage is '-s [path]').");
-                Logger.Exit("For information on how to create a schema, see MANUAL.md.");
-                return;
+                //No schema, attempt to find one in the local folder.
+                var files = Directory.GetFiles(Environment.CurrentDirectory);
+                List<FileInfo> jsons = new List<FileInfo>();
+                foreach (var file in files)
+                {
+                    var fi = new FileInfo(file);
+                    if (fi.Extension == ".json")
+                    {
+                        jsons.Add(fi);
+                    }
+                }
+
+                //Find the first valid JSON with Burrito.
+                string validSchemaLoc = null;
+                foreach (var file in jsons)
+                {
+                    if (BurritoAPI.IsValidSchema(file.FullName))
+                    {
+                        validSchemaLoc = file.FullName;
+                    }
+                }
+
+                //Found one?
+                if (validSchemaLoc == null)
+                {
+                    Logger.Log("Missing an API schema definition to generate from (usage is '-s [path]').");
+                    Logger.Exit("For information on how to create a schema, see the wiki.");
+                    return;
+                }
+
+                //Yes, set path.
+                BurritoAPI.APISchemaPath = validSchemaLoc;
             }
 
             //Schema exists?
@@ -77,6 +106,7 @@ namespace burritocli
             }
 
             //Run burrito.
+            Logger.Log("Rolling up schema '" + new FileInfo(BurritoAPI.APISchemaPath).Name + "'...");
             var t = new Stopwatch();
             t.Start();
             int filesGenerated = BurritoAPI.Run();
