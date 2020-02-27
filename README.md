@@ -26,6 +26,7 @@ mkbundle -o burrito --simple bin/Debug/burrito.exe --machine-config /etc/mono/4.
 ```
 
 ## Usage
+### Basics
 To create an API wrapper with Burrito, you first need to write an **API schema**. These are extremely simple representations of the routes that you're trying to add to the wrapper. A barebones simple example is below:
 ```json
 {
@@ -53,3 +54,6 @@ Once you've created your API schema, you can simply feed it into Burrito and it 
 burrito -s example.json
 ```
 There are many console flags that you can apply for different outputs of project, such as only creating a `.dll` and no project files, or generating both asynchronous and synchronous methods. Those are shown on the [Command Line Arguments wiki page]().
+
+### Examples
+As an example of how to set up and use a Burrito API, see the "[DnD5e-cs](https://github.com/c272/dnd5e-cs)" project, set up as an example of how an API wrapper can be implemented for NuGet.
