@@ -46,14 +46,14 @@ To create an API wrapper with Burrito, you first need to write an **API schema**
 	]
 }
 ```
-There are many parts about each route that you can customize, which are defined in the [API Schema wiki page,]() as well as the manual.
+There are many parts about each route that you can customize, which are defined in the [API Schema wiki page,](https://github.com/c272/burrito/wiki/API-Schema) as well as the manual.
 
 Once you've created your API schema, you can simply feed it into Burrito and it will generate an API wrapper project.
 
 ```bash
 burrito -s example.json
 ```
-There are many console flags that you can apply for different outputs of project, such as only creating a `.dll` and no project files, or generating both asynchronous and synchronous methods. Those are shown on the [Command Line Arguments wiki page]().
+There are many console flags that you can apply for different outputs of project, such as only creating a `.dll` and no project files, or generating both asynchronous and synchronous methods. Those are shown on the [Command Line Arguments wiki page](https://github.com/c272/burrito/wiki/Console-Arguments).
 
 ### Examples
 As an example of how to set up and use a Burrito API, see the "[DnD5e-cs](https://github.com/c272/dnd5e-cs)" project, set up as an example of how an API wrapper can be implemented for NuGet.
